@@ -13,7 +13,8 @@ async function start(): Promise<void> {
   //  const owner = await resolveCurrentUserOwnerName()
     const account = await getAccountId()
     const region = await getRegion()
-
+    console.log(account);
+    console.log(region);
     const env: Environment = {account, region}
     const app = new cdk.App()
     const ecr = new EcrStack(app, EcrStack.name, {env})

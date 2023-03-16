@@ -56,12 +56,9 @@ export class ElasticContainerStack extends Stack {
         })
 
         const httpListener = this.loadBalancer.addListener("http listener", {
-            port: 80,
+            port: CONTAINER_PORT,
             open: true,
-            defaultAction: ListenerAction.redirect({
-                port: "443",
-                protocol: ApplicationProtocol.HTTPS,
-            }),
+            protocol: ApplicationProtocol.HTTP
         })
 
         const targetGroup = httpListener.addTargets("tcp-listener-target", {
