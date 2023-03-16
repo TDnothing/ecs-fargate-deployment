@@ -3,7 +3,7 @@ import {Duration, Stack, StackProps} from "aws-cdk-lib";
 import {Construct} from "constructs";
 import {IRepository} from "aws-cdk-lib/aws-ecr";
 import {
-    Cluster,
+    Cluster, ContainerDefinition,
     CpuArchitecture,
     EcrImage,
     FargateService,
@@ -13,7 +13,9 @@ import {
 import {
     ApplicationLoadBalancer,
     ApplicationProtocol,
-    ApplicationProtocolVersion
+    ApplicationProtocolVersion,
+    ListenerAction,
+    SslPolicy
 } from "aws-cdk-lib/aws-elasticloadbalancingv2";
 
 
@@ -25,22 +27,25 @@ interface Props extends StackProps {
 const CONTAINER_PORT = 8081
 
 export class ElasticContainerStack extends Stack {
+    public readonly loadBalancer: ApplicationLoadBalancer
+    public readonly container: ContainerDefinition
+    public readonly service: FargateService
+    public readonly cluster: Cluster
+
     constructor(scope: Construct, id: string, props: Props) {
         super(scope, id, props)
-        const cluster = new Cluster(this, "exanubes-cluster", {
+        this.cluster = new Cluster(this, "exanubes-cluster", {
             vpc: props.vpc,
             clusterName: "exanubes-cluster",
             containerInsights: true,
         })
 
-
         const albSg = new SecurityGroup(this, "security-group-load-balancer", {
             vpc: props.vpc,
             allowAllOutbound: true,
         })
-        albSg.addIngressRule(Peer.anyIpv4(), Port.tcp(CONTAINER_PORT))
 
-        const loadBalancer = new ApplicationLoadBalancer(this, "exanubes-alb", {
+        this.loadBalancer = new ApplicationLoadBalancer(this, "exanubes-alb", {
             vpc: props.vpc,
             loadBalancerName: "exanubes-ecs-alb",
             internetFacing: true,
@@ -50,10 +55,13 @@ export class ElasticContainerStack extends Stack {
             deletionProtection: false,
         })
 
-        const httpListener = loadBalancer.addListener("http listener", {
-            port: CONTAINER_PORT,
+        const httpListener = this.loadBalancer.addListener("http listener", {
+            port: 80,
             open: true,
-            protocol: ApplicationProtocol.HTTP
+            defaultAction: ListenerAction.redirect({
+                port: "443",
+                protocol: ApplicationProtocol.HTTPS,
+            }),
         })
 
         const targetGroup = httpListener.addTargets("tcp-listener-target", {
@@ -72,14 +80,12 @@ export class ElasticContainerStack extends Stack {
                 },
             }
         )
-        const container = taskDefinition.addContainer("web-server", {
+        this.container = taskDefinition.addContainer("web-server", {
             image: EcrImage.fromEcrRepository(props.repository),
         })
-        container.addPortMappings({
+        this.container.addPortMappings({
             containerPort: CONTAINER_PORT,
         })
-
-
 
 
         const securityGroup = new SecurityGroup(this, "http-sg", {
@@ -90,15 +96,16 @@ export class ElasticContainerStack extends Stack {
             Port.tcp(CONTAINER_PORT),
             "Allow inbound connections from ALB"
         )
-        const fargateService = new FargateService(this, "fargate-service", {
-            cluster,
+        this.service = new FargateService(this, "fargate-service", {
+            cluster: this.cluster,
             assignPublicIp: false,
             taskDefinition,
             securityGroups: [securityGroup],
             desiredCount: 1,
+            maxHealthyPercent: 100
         })
 
-        targetGroup.addTarget(fargateService)
+        targetGroup.addTarget(this.service)
 
 
     }

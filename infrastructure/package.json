@@ -8,9 +8,7 @@
     "watch": "tsc -w",
     "test": "jest",
     "cdk": "cdk",
-    "build": "tsc && trash cdk.out && npm run cdk synth",
-    "cdk:destroy": "npm run cdk destroy -- --app cdk.out $npm_config_stacks --role-arn=arn:aws:iam::$(aws sts get-caller-identity --query 'Account' --output text):role/exanubes-cloudformation-access",
-    "cdk:deploy": "npm run cdk deploy -- --app cdk.out $npm_config_stacks --role-arn=arn:aws:iam::$(aws sts get-caller-identity --query 'Account' --output text):role/exanubes-cloudformation-access"
+    "build": "tsc && trash cdk.out && npm run cdk synth"
   },
   "devDependencies": {
     "@types/jest": "^26.0.10",
@@ -23,6 +21,7 @@
     "typescript": "~3.9.7"
   },
   "dependencies": {
+    "@exanubes/cdk-utils": "^0.0.3",
     "aws-cdk-lib": "2.15.0",
     "constructs": "^10.0.0",
     "source-map-support": "^0.5.16"
