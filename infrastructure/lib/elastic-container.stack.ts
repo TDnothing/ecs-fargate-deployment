@@ -99,6 +99,7 @@ export class ElasticContainerStack extends Stack {
             taskDefinition,
             securityGroups: [securityGroup],
             desiredCount: 1,
+            minHealthyPercent: 0,
             maxHealthyPercent: 100
         })
 
