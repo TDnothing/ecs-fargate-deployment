@@ -127,7 +127,7 @@ export class PipelineStack extends Stack {
         }
 
         const pipeline = new Pipeline(this, "DeployPipeline", {
-            pipelineName: `exanubes-pipeline`,
+            pipelineName: `prologue-pipeline`,
             stages: [
                 { stageName: "Source", actions: [pipelineActions.source] },
                 { stageName: "Build", actions: [pipelineActions.build] },

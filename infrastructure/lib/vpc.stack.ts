@@ -7,7 +7,7 @@ export class VpcStack extends Stack {
 
     constructor(scope: Construct, id: string, props: StackProps) {
         super(scope, id, props)
-        this.vpc = new Vpc(this, "exanubes-vpc", {
+        this.vpc = new Vpc(this, "prologue-vpc", {
             cidr: "10.100.0.0/16",
             maxAzs: 2,
             subnetConfiguration: [

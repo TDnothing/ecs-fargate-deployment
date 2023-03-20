@@ -34,9 +34,9 @@ export class ElasticContainerStack extends Stack {
 
     constructor(scope: Construct, id: string, props: Props) {
         super(scope, id, props)
-        this.cluster = new Cluster(this, "exanubes-cluster", {
+        this.cluster = new Cluster(this, "prologue-cluster", {
             vpc: props.vpc,
-            clusterName: "exanubes-cluster",
+            clusterName: "prologue-cluster",
             containerInsights: true,
         })
 
@@ -45,9 +45,9 @@ export class ElasticContainerStack extends Stack {
             allowAllOutbound: true,
         })
 
-        this.loadBalancer = new ApplicationLoadBalancer(this, "exanubes-alb", {
+        this.loadBalancer = new ApplicationLoadBalancer(this, "prologue-alb", {
             vpc: props.vpc,
-            loadBalancerName: "exanubes-ecs-alb",
+            loadBalancerName: "prologue-ecs-alb",
             internetFacing: true,
             idleTimeout: Duration.minutes(10),
             securityGroup: albSg,

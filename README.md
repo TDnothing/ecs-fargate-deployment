@@ -1,20 +1,26 @@
 # ECS Fargate Deployment
 
-
-Repository from [exanubes.com](https://exanubes.com) for [Deploying ECS Fargate Application](https://exanubes.com/blog/deploying-ecs-fargate-application).
-
-
 This repository is using AWS CDK v2 and is not compatible with AWS CDK v1 bootstrap stack.
 
 ## Commands:
 
 Run the following commands inside `infrastructure` directory for building, deploying and destroying the stacks
 
+First time setup:
+Setup aws cdk in your bash
 ```
+npm install
 npm run build
-npm run cdk:deploy
-npm run cdk:destroy
+cdk deploy VpcStack
+cdk deploy EcrStack
 ```
+logged into your AWS account and go to ECR, click "view push commands" to build and push images 
+use "docker buildx build --platform="linux/arm64" -t  " to build linux image. 
+
+then run the following
+```
+cdk deploy --all
 
 
-Both of these commands use the `aws-cli sts` service to get the account id and aws IAM role `exanubes-cloudformation-access` in order to dynamically provide role arn. Make sure you're using the account you want to deploy the stacks to and that you have the role created either with the same name or different name and change the scripts in `package.json`.
+cdk destroy --all
+```

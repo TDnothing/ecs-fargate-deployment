@@ -6,7 +6,7 @@ export class EcrStack extends Stack {
     public readonly repository: IRepository
     constructor(scope: Construct, id: string, props: StackProps){
         super(scope, id, props)
-        this.repository = new Repository(this, "exanubes-repository", {
+        this.repository = new Repository(this, "prologue-repository", {
             imageScanOnPush: false,
             removalPolicy: RemovalPolicy.DESTROY,
         })
