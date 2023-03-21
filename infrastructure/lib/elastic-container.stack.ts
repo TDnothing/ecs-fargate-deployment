@@ -14,6 +14,7 @@ import {
     ApplicationLoadBalancer,
     ApplicationProtocol,
     ApplicationProtocolVersion,
+    NetworkLoadBalancer,
     ListenerAction,
     SslPolicy
 } from "aws-cdk-lib/aws-elasticloadbalancingv2";
