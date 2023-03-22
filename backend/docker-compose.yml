@@ -7,6 +7,8 @@ services:
       context: .
     ports:
       - 8081:8081
+    volumes:
+     - .:/backend
   redis: 
     image: redis:latest
     ports:
