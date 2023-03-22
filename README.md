@@ -19,8 +19,10 @@ use "docker buildx build --platform="linux/arm64" -t  " to build linux image.
 
 then run the following
 ```
+cdk deploy EcsStack
+```
+After ECS has deployed, go to EC2 and check copy load balance DNS, use port 8081, you should see hello message. Then deploy all to setup CI/CD pipeline
+```
 cdk deploy --all
-
-
 cdk destroy --all
 ```
