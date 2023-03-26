@@ -13,8 +13,8 @@ import * as redisStore from 'cache-manager-redis-store';
     CacheModule.register({
       isGlobal: true,
       store: redisStore,
-      host: "myelasticachecluster.cf3878.0001.use1.cache.amazonaws.com",
-      port: 6379,
+      host: process.env.REDIS_HOST,
+      port: process.env.REDIS_PORT,
       username: process.env.REDIS_USERNAME,
       no_ready_check: true,
       ttl: 3600,
